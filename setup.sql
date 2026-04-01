@@ -427,16 +427,17 @@ FROM scaled
 QUALIFY ROW_NUMBER() OVER (ORDER BY CLAIM_ID, LINE_NO) <= 280
 ;
 
+-- ハンズオン用のGitHubリポジトリを登録
+CREATE OR REPLACE GIT REPOSITORY car_insurance_handson
+ API_INTEGRATION = git_api_integration
+ ORIGIN = 'https://github.com/sfc-gh-yyano/car_insurance_handson.git';
 
 -- チェックする
 ls @car_insurance_handson/branches/main;
 
 -- Githubからファイルを持ってくる
-COPY FILES INTO @handson.car_insurance.pdf FROM @car_insurance_handson/branches/main/data/ PATTERN = '\\.pdf$';
-COPY FILES INTO @handson.car_insurance.image FROM @car_insurance_handson/branches/main/data/ PATTERN = '\\.png$';
-
-
-// Notebookを作成 //
+COPY FILES INTO @handson.car_insurance.pdf FROM @car_insurance_handson/branches/main/data/ PATTERN = '.*\.pdf';
+COPY FILES INTO @handson.car_insurance.image FROM @car_insurance_handson/branches/main/data/ PATTERN = '.*\.png';
 
 -- Notebookの作成
 CREATE OR REPLACE NOTEBOOK car_insurance_analysis
