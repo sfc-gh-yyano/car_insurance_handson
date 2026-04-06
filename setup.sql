@@ -7,6 +7,7 @@ CREATE OR REPLACE SCHEMA AGENTS;
 
 CREATE OR REPLACE DATABASE handson;
 CREATE OR REPLACE SCHEMA handson.car_insurance;
+
 CREATE OR REPLACE STAGE handson.car_insurance.pdf
   DIRECTORY = ( ENABLE = TRUE )
   ENCRYPTION = ( TYPE = 'SNOWFLAKE_SSE' )
@@ -537,20 +538,14 @@ GRANT ROLE DX_ROLE TO USER IDENTIFIER($MY_USER);
 -- Git統合 セットアップ
 -- =============================================
 -- ハンズオン用のGitHubリポジトリを登録
-CREATE OR REPLACE GIT REPOSITORY car_insurance_handson
+CREATE OR REPLACE GIT REPOSITORY handson.public.car_insurance_handson
  API_INTEGRATION = git_api_integration
  ORIGIN = 'https://github.com/sfc-gh-yyano/car_insurance_handson.git';
 
 -- チェックする
-ls @car_insurance_handson/branches/main;
+ls @handson.public.car_insurance_handson/branches/main;
 
 -- Githubからファイルを持ってくる
-COPY FILES INTO @handson.car_insurance.pdf FROM @car_insurance_handson/branches/main/data/ PATTERN = '.*\.pdf';
-COPY FILES INTO @handson.car_insurance.image FROM @car_insurance_handson/branches/main/data/ PATTERN = '.*\.png';
+COPY FILES INTO @handson.car_insurance.pdf FROM @handson.public.car_insurance_handson/branches/main/data/ FILES = ('driver_insurance_yakkan.pdf', 'hoken_seikyu.pdf');
+COPY FILES INTO @handson.car_insurance.image FROM @handson.public.car_insurance_handson/branches/main/data/ FILES = ('accident_image.png');
 
--- Notebookの作成
-CREATE OR REPLACE NOTEBOOK car_insurance_analysis
-    FROM @GIT_INTEGRATION_FOR_HANDSON/branches/main/handson
-    MAIN_FILE = 'CAR_INSURANCE_ANALYSIS.ipynb'
-    QUERY_WAREHOUSE = compute_wh
-    WAREHOUSE = compute_wh;
