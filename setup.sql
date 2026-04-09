@@ -549,3 +549,8 @@ ls @handson.public.car_insurance_handson/branches/main;
 COPY FILES INTO @handson.car_insurance.pdf FROM @handson.public.car_insurance_handson/branches/main/data/ FILES = ('driver_insurance_yakkan.pdf', 'hoken_seikyu.pdf');
 COPY FILES INTO @handson.car_insurance.image FROM @handson.public.car_insurance_handson/branches/main/data/ FILES = ('accident_image.png');
 
+ALTER STAGE handson.car_insurance.pdf REFRESH;
+ALTER STAGE handson.car_insurance.image REFRESH;
+
+SELECT 'セットアップ完了' as status;
+
